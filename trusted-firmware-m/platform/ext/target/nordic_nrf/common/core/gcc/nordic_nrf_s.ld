@@ -618,7 +618,7 @@ VENEERS()
 
     Load$$LR$$LR_NS_PARTITION$$Base = NS_PARTITION_START;
 
-#ifdef BL2
+#if defined(BL2) || defined(PM_MCUBOOT_ADDRESS) 
     Load$$LR$$LR_SECONDARY_PARTITION$$Base = SECONDARY_PARTITION_START;
 #endif /* BL2 */
 

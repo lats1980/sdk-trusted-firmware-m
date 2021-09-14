@@ -37,6 +37,7 @@ REGION_DECLARE(Image$$, ARM_LIB_STACK_MSP,  $$ZI$$Base);
 
 static fih_int tfm_core_init(void)
 {
+    __set_BASEPRI(0);
     size_t i;
     enum tfm_hal_status_t hal_status = TFM_HAL_ERROR_GENERIC;
     enum tfm_plat_err_t plat_err = TFM_PLAT_ERR_SYSTEM_ERR;

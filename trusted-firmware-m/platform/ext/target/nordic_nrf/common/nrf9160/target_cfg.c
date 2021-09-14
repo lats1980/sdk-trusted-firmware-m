@@ -15,8 +15,8 @@
  * limitations under the License.
  */
 
-#include "target_cfg.h"
 #include "region_defs.h"
+#include "target_cfg.h"
 #include "tfm_plat_defs.h"
 #include "region.h"
 
@@ -37,7 +37,7 @@ struct platform_data_t tfm_peripheral_std_uart = {
 REGION_DECLARE(Load$$LR$$, LR_NS_PARTITION, $$Base);
 REGION_DECLARE(Load$$LR$$, LR_VENEER, $$Base);
 REGION_DECLARE(Load$$LR$$, LR_VENEER, $$Limit);
-#ifdef BL2
+#if defined(BL2) || defined(PM_MCUBOOT_ADDRESS)
 REGION_DECLARE(Load$$LR$$, LR_SECONDARY_PARTITION, $$Base);
 #endif /* BL2 */
 
@@ -59,7 +59,7 @@ const struct memory_region_limits memory_regions = {
     .veneer_limit =
         (uint32_t)&REGION_NAME(Load$$LR$$, LR_VENEER, $$Limit),
 
-#ifdef BL2
+#if defined(BL2) || defined(PM_MCUBOOT_ADDRESS)
     .secondary_partition_base =
         (uint32_t)&REGION_NAME(Load$$LR$$, LR_SECONDARY_PARTITION, $$Base),
 
@@ -67,6 +67,10 @@ const struct memory_region_limits memory_regions = {
         (uint32_t)&REGION_NAME(Load$$LR$$, LR_SECONDARY_PARTITION, $$Base) +
         SECONDARY_PARTITION_SIZE - 1,
 #endif /* BL2 */
+#if defined(PM_SETTINGS_STORAGE_ADDRESS)
+    .non_secure_storage_base = PM_SETTINGS_STORAGE_ADDRESS,
+    .non_secure_storage_limit = PM_SETTINGS_STORAGE_END_ADDRESS,
+#endif
 };
 
 /* To write into AIRCR register, 0x5FA value must be write to the VECTKEY field,
@@ -171,13 +175,17 @@ enum tfm_plat_err_t spu_init_cfg(void)
     /* Configures SPU Code and Data regions to be non-secure */
     spu_regions_flash_config_non_secure(memory_regions.non_secure_partition_base,
                                         memory_regions.non_secure_partition_limit);
+#if defined(PM_SETTINGS_STORAGE_ADDRESS)
+    spu_regions_flash_config_non_secure(memory_regions.non_secure_storage_base,
+                                        memory_regions.non_secure_storage_limit);
+#endif
     spu_regions_sram_config_non_secure(NS_DATA_START, NS_DATA_LIMIT);
 
     /* Configures veneers region to be non-secure callable */
     spu_regions_flash_config_non_secure_callable(memory_regions.veneer_base,
                                                  memory_regions.veneer_limit - 1);
 
-#ifdef BL2
+#if defined(BL2) || defined(PM_MCUBOOT_ADDRESS)
     /* Secondary image partition */
     spu_regions_flash_config_non_secure(memory_regions.secondary_partition_base,
                                         memory_regions.secondary_partition_limit);

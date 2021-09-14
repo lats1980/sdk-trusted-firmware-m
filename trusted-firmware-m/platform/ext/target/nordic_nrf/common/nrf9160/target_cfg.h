@@ -45,10 +45,14 @@ struct memory_region_limits {
     uint32_t non_secure_partition_limit;
     uint32_t veneer_base;
     uint32_t veneer_limit;
-#ifdef BL2
+#if defined(BL2) || defined(PM_MCUBOOT_ADDRESS)
     uint32_t secondary_partition_base;
     uint32_t secondary_partition_limit;
 #endif /* BL2 */
+#if defined(PM_SETTINGS_STORAGE_ADDRESS)
+    uint32_t non_secure_storage_base;
+    uint32_t non_secure_storage_limit;
+#endif
 };
 
 /**
