@@ -58,15 +58,12 @@ target_include_directories(platform_s
 target_sources(platform_s
     PRIVATE
         cmsis_drivers/Driver_Flash.c
-        cmsis_drivers/Driver_USART.c
-        nrfx/drivers/src/nrfx_uarte.c
         nrfx/drivers/src/nrfx_nvmc.c
         nrfx_glue.c
         native_drivers/mpu_armv8m_drv.c
         native_drivers/spu.c
         spm_hal.c
         tfm_hal_isolation.c
-        plat_test.c
 )
 
 target_compile_options(platform_s
@@ -78,10 +75,7 @@ target_compile_options(platform_s
 
 target_sources(platform_ns
     PRIVATE
-        cmsis_drivers/Driver_USART.c
-        nrfx/drivers/src/nrfx_uarte.c
         nrfx_glue.c
-        plat_test.c
 )
 
 target_include_directories(platform_ns
